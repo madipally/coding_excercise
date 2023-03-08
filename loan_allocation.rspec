@@ -1,0 +1,71 @@
+require './loan_allocation'
+RSpec.describe LoanAllocation do
+  let(:investors) do
+    [
+      { name: 'Bob', category: ['property'], risk_band: nil, max_investment: 6000, property_percentage: 1 },
+      { name: 'Susan', category: %w[property retail], risk_band: nil, max_investment: 2000, property_percentage: 1 },
+      { name: 'George', category: [], risk_band: 'A', max_investment: 2000, property_percentage: 1 },
+      { name: 'Helen', category:  ['property'], risk_band: nil, max_investment: 2000, property_percentage: 0.4 },
+      { name: 'Jamie', category: ['property'], risk_band: '>A', max_investment: 8000,
+    property_percentage: 1 }
+    ]
+  end
+
+  let(:loans) do
+    [
+      { id: 1, category: 'property', risk_band: 'A', amount: 6000 },
+      { id: 2, category: 'retail', risk_band: 'B', amount: 2000 },
+      { id: 3, category: 'property', risk_band: 'B', amount: 2000 },
+      { id: 4, category: 'property', risk_band: 'A+', amount: 8000 }
+    ]
+  end
+
+  let(:default_risk_bands) { { 'A+' => 4 ,'A' => 3, 'B' => 2, 'C' => 1 } }
+
+  describe '#initialize' do
+
+    subject { described_class.new(investors, loans, default_risk_bands) }
+
+    it 'sets investors, loans and default_risk_bands' do
+      expect(subject.investors).to eq(investors)
+      expect(subject.loans).to eq(loans)
+      expect(subject.default_risk_bands).to eq(default_risk_bands)
+    end
+  end
+
+  describe '#allocate_loans' do
+    subject { described_class.new(investors, loans, default_risk_bands) }
+
+    it 'returns allocated loans hash' do
+      allocated_loans = subject.validate_and_allocate_loans
+
+      expect(allocated_loans).to be_instance_of(Hash)
+      expect(allocated_loans.keys).to include('Bob', 'Susan')
+    end
+
+    it 'allocates loans to investors' do
+      allocated_loans = subject.validate_and_allocate_loans
+      expect(allocated_loans['Bob']).to eq([{ id: 1, category: 'property', risk_band: 'A', amount: 6000 }])
+      expect(allocated_loans['Susan']).to eq([{id: 2, category: 'retail', risk_band: 'B', amount: 2000 }])
+      expect(allocated_loans['George']).to be_empty
+    end
+  end
+
+  describe '#calculate_percentage' do
+    subject { described_class.new(investors, loans, default_risk_bands) }
+
+    it 'calculates the property loan percentage in the allocated loans' do
+      allocated_loans = subject.validate_and_allocate_loans
+      expect(allocated_loans['Helen'][0][:amount]).to eq(2000)
+    end
+  end
+
+  describe '#allocate_loans_by_risk_band' do
+    subject { described_class.new(investors, loans, default_risk_bands) }
+
+    it 'allocates loan based on risk band' do
+      allocated_loans = subject.validate_and_allocate_loans
+      expect(allocated_loans['Jamie'][0][:risk_band]).to eq('A+')
+    end
+  end
+end
