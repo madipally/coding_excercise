@@ -56,6 +56,8 @@ module LoanAllocationHelper
       assign_loans(investor, loan, allocated_loans, allocated) if loan_risk_val <= investor_risk_val
     when '>='
       assign_loans(investor, loan, allocated_loans, allocated) if loan_risk_val >= investor_risk_val
+    else
+      puts "Invalid choice"
     end
   end
 
