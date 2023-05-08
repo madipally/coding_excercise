@@ -10,7 +10,7 @@ class LoanAllocation
     @default_risk_bands = default_risk_bands
   end
 
-  # Allocate loans to investors
+  # Allocate loans to investors testing
   def validate_and_allocate_loans
     allocated_loans = {}
     loans.each do |loan|
@@ -21,7 +21,7 @@ class LoanAllocation
   end
 end
 
-# Sample data
+# Sample data for testing
 investors = [
   { name: 'Bob', category: ['property'], risk_band: nil, max_investment: 2000,
     property_percentage: 1 },
