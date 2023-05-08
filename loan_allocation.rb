@@ -1,3 +1,4 @@
+# testing comment
 require './loan_allocation_helper'
 class LoanAllocation
   include LoanAllocationHelper
