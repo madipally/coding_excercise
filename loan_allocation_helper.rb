@@ -1,5 +1,6 @@
 module LoanAllocationHelper
   # Comment for testing from main branch 
+  # Comment for testing from branchA 
   # Method for iterating investors against each loan and assigning
   def iterate_investors(loan, investors, allocated_loans, allocated)
     investors.each do |investor|
@@ -12,7 +13,7 @@ module LoanAllocationHelper
     end; allocated_loans
   end
 
-  # Method for comparing investor's amount against loan amount
+  # Method for comparing investor's amount against loan amount 
   def compare_amounts?(investor_amount, loan_amount)
     investor_amount >= loan_amount
   end
