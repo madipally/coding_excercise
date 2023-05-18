@@ -1,4 +1,5 @@
 module LoanAllocationHelper
+  # Comment for testing from main branch 
   # Method for iterating investors against each loan and assigning
   def iterate_investors(loan, investors, allocated_loans, allocated)
     investors.each do |investor|
